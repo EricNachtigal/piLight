@@ -22,17 +22,24 @@ wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
 
-  # Enable fallback hotspot in case wifi connection fails
-  ap:
-    ssid: "Pilight-Dev Fallback Hotspot"
-    password: "sDcuGB2e5xiV"
-
 output:
   - platform: gpio
     pin:
       number: 32 #Onboard LED PicoW
       mode: output
     id: LED
+  - platform: rp2040_pwm
+    pin: 22
+    frequency: 1000 Hz
+    id: pwm_red
+  - platform: rp2040_pwm
+    pin: 21
+    frequency: 1000 Hz
+    id: pwm_green
+  - platform: rp2040_pwm
+    pin: 20
+    frequency: 1000 Hz
+    id: pwm_blue
 
 interval:
   - interval: 3000ms
@@ -41,16 +48,9 @@ interval:
       - delay: 1500ms
       - output.turn_off: LED
 
-switch:
-  - platform: gpio
-    pin: 
-      number: 22
-    name: "PiLight-Dev : Red"
-  - platform: gpio
-    pin: 
-      number: 21
-    name: "PiLight-Dev : Green"
-  - platform: gpio
-    pin: 
-      number: 20
-    name: "PiLight-Dev : Blue"
+light:
+  - platform: rgb
+    name: "PiLight-Dev RGB"
+    red: pwm_red
+    green: pwm_green
+    blue: pwm_blue
